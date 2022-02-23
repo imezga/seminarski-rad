@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato&family=Open+Sans+Condensed:wght@300&display=swap');
+
+@mixin flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  height: 100vh;
+  background-color: snow;
+  @include flex;
+}
+
+.container {
+  @include flex;
+  width: 100%;
+
+  form {
+    box-shadow: 2px 2px 230px rgba(0, 0, 0, 0.2);
+    width: 80%;
+    border-radius: 15px 15px 0 0;
+    background-color: rgba($color: #eeeeee, $alpha: 0.6);
+    font-family: 'Lato', sans-serif;
+    .chat {
+      display: flex;
+      flex-direction: column;
+      padding: 1em;
+      min-height: 60vh;
+
+      p {
+        margin-left: 5px;
+        font-family: 'Open Sans Condensed', sans-serif;
+        letter-spacing: 1px;
+        font-size: 1.2em;
+      }
+
+      h4 {
+        border-radius: 10px;
+        padding: 1em;
+        width: fit-content;
+        color: white;
+        letter-spacing: 1px;
+      }
+      .my-message {
+        h4 {
+          background-color: #4c5747;
+        }
+      }
+
+      .message {
+        align-self: flex-end;
+        h4 {
+          background-color: #6eac51;
+        }
+      }
+    }
+
+    .message-submit {
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      @include flex;
+
+      #input-message {
+        width: 90%;
+        height: 50px;
+        border: none;
+        outline: none;
+        padding: 1em;
+        background-color: #7e807d;
+        color: white;
+        font-size: 1em;
+        transition: background 0.2s ease;
+
+        &::placeholder {
+          color: white;
+        }
+
+        &:focus {
+          background-color: #636362;
+        }
+      }
+
+      #submit {
+        width: 11%;
+        height: 50px;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        font-size: 1.2em;
+        background-color: rgba($color: #83be5c, $alpha: 0.8);
+        transition: all 0.2s ease-in-out;
+
+        &:hover {
+          background-color: rgba($color: #68f30c, $alpha: 0.5);
+        }
+      }
+    }
+  }
+}
