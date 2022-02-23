@@ -73,17 +73,20 @@ function randomName() {
   );
 }
 
+// defining new scaledrone
 const drone = new Scaledrone(CHANNEL_ID, {
   data: {
     name: randomName(),
   },
 });
 
+// connecting to scaledrone
 drone.on('open', (error) => {
   if (error) {
     return console.log(error);
   }
 
+  // room definition and connecting to room
   var room = drone.subscribe('observable-mez');
   room.on('open', function (error) {
     if (error) {
@@ -92,6 +95,7 @@ drone.on('open', (error) => {
     console.log("Joined to mez's room");
   });
 
+  // message handler
   room.on('message', function (message) {
     const member = message.member.clientData.name;
     const text = message.data;
@@ -103,6 +107,7 @@ drone.on('open', (error) => {
   });
 });
 
+// add recived message to chat
 function addMessageToChat(member, text, memberId, droneId) {
   let html = '';
   if (memberId === droneId) {
@@ -118,6 +123,7 @@ function addMessageToChat(member, text, memberId, droneId) {
   chat.innerHTML += html;
 }
 
+// onsubmit send message to certain room
 form.addEventListener('submit', function () {
   const value = messageInput.value;
   if (value.trim() === '') {
