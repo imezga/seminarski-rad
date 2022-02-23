@@ -1,110 +1,132 @@
-document.addEventListener('DOMContentLoaded', function () {
-  const chat = document.querySelector('.chat');
-  const form = document.getElementsByTagName('form')[0];
-  const messageInput = document.getElementById('input-message');
+const chat = document.querySelector('.chat');
+const form = document.getElementsByTagName('form')[0];
+const messageInput = document.getElementById('input-message');
 
-  const CHANNEL_ID = 'GKuFMJGEPgaDeAUk';
+const CHANNEL_ID = 'GKuFMJGEPgaDeAUk';
 
-  const firstNames = [
-    'Harry',
-    'Ross',
-    'Bruce',
-    'Cook',
-    'Carolyn',
-    'Morgan',
-    'Albert',
-    'Walker',
-    'Randy',
-    'Reed',
-    'Larry',
-    'Barnes',
-    'Lois',
-    'Wilson',
-    'Jesse',
-    'Campbell',
-    'Ernest',
-    'Rogers',
-    'Theresa',
-    'Patterson',
-    'Henry',
-    'Simmons',
-    'Michelle',
-    'Perry',
-    'Frank',
-    'Butler',
-    'Shirley',
-  ];
+const firstNames = [
+  'Harry',
+  'Ross',
+  'Bruce',
+  'Cook',
+  'Carolyn',
+  'Morgan',
+  'Albert',
+  'Walker',
+  'Randy',
+  'Reed',
+  'Larry',
+  'Barnes',
+  'Lois',
+  'Wilson',
+  'Jesse',
+  'Campbell',
+  'Ernest',
+  'Rogers',
+  'Theresa',
+  'Patterson',
+  'Henry',
+  'Simmons',
+  'Michelle',
+  'Perry',
+  'Frank',
+  'Butler',
+  'Shirley',
+];
 
-  const lastNames = [
-    'Ruth',
-    'Jackson',
-    'Debra',
-    'Allen',
-    'Gerald',
-    'Harris',
-    'Raymond',
-    'Carter',
-    'Jacqueline',
-    'Torres',
-    'Joseph',
-    'Nelson',
-    'Carlos',
-    'Sanchez',
-    'Ralph',
-    'Clark',
-    'Jean',
-    'Alexander',
-    'Stephen',
-    'Roberts',
-    'Eric',
-    'Long',
-    'Amanda',
-    'Scott',
-    'Teresa',
-    'Diaz',
-    'Wanda',
-    'Thomas',
-  ];
+const lastNames = [
+  'Ruth',
+  'Jackson',
+  'Debra',
+  'Allen',
+  'Gerald',
+  'Harris',
+  'Raymond',
+  'Carter',
+  'Jacqueline',
+  'Torres',
+  'Joseph',
+  'Nelson',
+  'Carlos',
+  'Sanchez',
+  'Ralph',
+  'Clark',
+  'Jean',
+  'Alexander',
+  'Stephen',
+  'Roberts',
+  'Eric',
+  'Long',
+  'Amanda',
+  'Scott',
+  'Teresa',
+  'Diaz',
+  'Wanda',
+  'Thomas',
+];
 
-  function randomName() {
-    return (
-      firstNames[Math.floor(Math.random() * firstNames.length)] +
-      '_' +
-      lastNames[Math.floor(Math.random() * lastNames.length)]
-    );
+function randomName() {
+  return (
+    firstNames[Math.floor(Math.random() * firstNames.length)] +
+    '_' +
+    lastNames[Math.floor(Math.random() * lastNames.length)]
+  );
+}
+
+const drone = new Scaledrone(CHANNEL_ID, {
+  data: {
+    name: randomName(),
+  },
+});
+
+drone.on('open', (error) => {
+  if (error) {
+    return console.log(error);
   }
 
-  const drone = new Scaledrone(CHANNEL_ID, {
-    data: {
-      name: randomName(),
-    },
-  });
-
-  drone.on('open', (error) => {
-    if (error) {
-      return console.log(error);
-    }
-  });
-
-  const room = drone.subscribe('mez');
-
-  room.on('open', (error) => {
+  var room = drone.subscribe('observable-mez');
+  room.on('open', function (error) {
     if (error) {
       return console.error(error);
     }
-    // Connected to room
+    console.log("Joined to mez's room");
   });
 
-  room.on('message', (message) => {
-    console.log(message);
+  room.on('message', function (message) {
+    const member = message.member.clientData.name;
+    const text = message.data;
+    const memberId = message.clientId;
+    const droneId = drone.clientId;
+    console.log(memberId, droneId);
+    addMessageToChat(member, text, memberId, droneId);
+    chat.scrollTop = chat.scrollHeight;
   });
+});
 
-  form.addEventListener('submit', function () {
-    const value = messageInput.value;
+function addMessageToChat(member, text, memberId, droneId) {
+  let html = '';
+  if (memberId === droneId) {
+    html = "<div class='my-message'>";
+  } else {
+    html = "<div class='message'>";
+  }
+  html += `
+  <p>${member}</p>
+  <h4>${text}</h4>
+  </div>
+  `;
+  chat.innerHTML += html;
+}
 
-    if (value.trim() === '') {
-      return;
-    } else {
-    }
-  });
+form.addEventListener('submit', function () {
+  const value = messageInput.value;
+  if (value.trim() === '') {
+    return;
+  } else {
+    messageInput.value = '';
+    drone.publish({
+      room: 'observable-mez',
+      message: value,
+    });
+  }
 });
