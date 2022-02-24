@@ -30,6 +30,11 @@ body {
     background-color: rgba($color: #eeeeee, $alpha: 0.6);
     font-family: 'Lato', sans-serif;
     .chat {
+      #chat-placeholder {
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
       display: flex;
       flex-direction: column;
       padding: 1em;

@@ -1,6 +1,7 @@
 const chat = document.querySelector('.chat');
 const form = document.getElementsByTagName('form')[0];
 const messageInput = document.getElementById('input-message');
+const chatPlaceholder = document.getElementById('chat-placeholder');
 
 const CHANNEL_ID = 'GKuFMJGEPgaDeAUk';
 
@@ -101,7 +102,7 @@ drone.on('open', (error) => {
     const text = message.data;
     const memberId = message.clientId;
     const droneId = drone.clientId;
-    console.log(memberId, droneId);
+
     addMessageToChat(member, text, memberId, droneId);
     chat.scrollTop = chat.scrollHeight;
   });
@@ -109,6 +110,9 @@ drone.on('open', (error) => {
 
 // add recived message to chat
 function addMessageToChat(member, text, memberId, droneId) {
+  if (chatPlaceholder.style.display === 'flex') {
+    chatPlaceholder.style.display = 'none';
+  }
   let html = '';
   if (memberId === droneId) {
     html = "<div class='my-message'>";
@@ -124,7 +128,8 @@ function addMessageToChat(member, text, memberId, droneId) {
 }
 
 // onsubmit send message to certain room
-form.addEventListener('submit', function () {
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
   const value = messageInput.value;
   if (value.trim() === '') {
     return;
